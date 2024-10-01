@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Tarot Stats</string>
+    <string name="title_activity_add_joueur">AddJoueurActivity</string>
+    <string name="title_activity_liste_joueurs">ListeJoueursActivity</string>
+</resources>
