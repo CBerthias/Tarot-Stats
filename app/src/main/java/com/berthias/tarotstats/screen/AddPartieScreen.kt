@@ -1,7 +1,5 @@
 package com.berthias.tarotstats.screen
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -66,14 +64,15 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
         val couleurList: List<CouleurEnum> = CouleurEnum.entries.toList()
         val couleurStringList: List<String> = couleurList.map { it.stringValue }
         var couleurSelected by remember { mutableStateOf(couleurList.getOrNull(0)) }
-        DropdownBox(valueList = couleurStringList, label = "Roi appelé", selectableList = couleurList, selected = couleurSelected) {
+        DropdownBox(valueList = couleurStringList, label = "Roi appelé") {
             couleurSelected = couleurList[it]
         }
 
         val joueurList by joueurViewModel.listJoueurs.collectAsState()
-        val joueurStringList = if (joueurList.isNotEmpty()) joueurList.map { it.nom } else listOf("")
+        val joueurStringList =
+            if (joueurList.isNotEmpty()) joueurList.map { it.nom } else listOf("")
         var joueurSelected by remember { mutableStateOf(joueurList.getOrNull(0)) }
-        DropdownBox(valueList = joueurStringList, label = "Joueur", selectableList = joueurList, selected = joueurSelected) {
+        DropdownBox(valueList = joueurStringList, label = "Joueur") {
             joueurSelected = joueurList.getOrNull(it)
         }
 
@@ -97,8 +96,6 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
         )
 
         Button(onClick = {
-            Log.v("TAG", joueurSelected?.nom ?: "null")
-            Log.v("TAG", couleurSelected?.stringValue ?: "null")
             coroutineScope.launch {
                 if (partieUI.nomJoueur != null && partieUI.couleur != null) {
                     partieViewModel.savePartie(partieUI)
@@ -107,11 +104,6 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
             }
         }) {
             Text(text = "Enregistrer la partie")
-        }
-
-        val parties by partieViewModel.listParties.collectAsState()
-        for (p in parties) {
-            Text(p.nomJoueur + p.couleur + p.gagne)
         }
     }
 }

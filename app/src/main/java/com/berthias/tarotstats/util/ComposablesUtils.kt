@@ -22,8 +22,11 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> DropdownBox(
-    modifier: Modifier = Modifier, valueList: List<String>, label: String, selected: T, selectableList: List<T>, onReturn: (Int) -> Unit
+fun DropdownBox(
+    modifier: Modifier = Modifier,
+    valueList: List<String>,
+    label: String,
+    onReturn: (Int) -> Unit
 ) {
     var selectedValue by remember { mutableIntStateOf(0) }
     var expanded by remember { mutableStateOf(false) }
@@ -31,9 +34,7 @@ fun <T> DropdownBox(
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
             OutlinedTextField(modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable, true),
                 value = valueList[selectedValue],
-                onValueChange = {
-                    onReturn(selectedValue)
-                },
+                onValueChange = {},
                 label = { Text(label) },
                 readOnly = true,
                 trailingIcon = {
@@ -47,6 +48,7 @@ fun <T> DropdownBox(
                         )
                     }, onClick = {
                         selectedValue = index
+                        onReturn(selectedValue)
                         expanded = false
                     })
                     if (index != valueList.size - 1) {
