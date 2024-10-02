@@ -2,6 +2,7 @@ package com.berthias.tarotstats.data
 
 import android.content.Context
 import com.berthias.tarotstats.data.repository.JoueurRepository
+import com.berthias.tarotstats.data.repository.PartieRepository
 
 class AppContainer(context: Context) {
 
@@ -10,6 +11,14 @@ class AppContainer(context: Context) {
             TarotDatabase.getDatabase(
                 context
             ).joueurDao()
+        )
+    }
+
+    val partieRepository: PartieRepository by lazy {
+        PartieRepository(
+            TarotDatabase.getDatabase(
+                context
+            ).partieDao()
         )
     }
 

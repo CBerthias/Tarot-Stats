@@ -17,7 +17,7 @@ interface JoueurDao {
     @Delete
     suspend fun delete(joueur: Joueur)
 
-    @Query("SELECT * FROM joueur j WHERE nom = :nom")
+    @Query("SELECT * FROM joueur WHERE nom = :nom")
     fun getJoueurByNom(nom: String): Flow<Joueur>
 
     @Query("SELECT * FROM joueur")
