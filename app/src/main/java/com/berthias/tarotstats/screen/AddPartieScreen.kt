@@ -3,7 +3,9 @@ package com.berthias.tarotstats.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Switch
@@ -60,7 +62,7 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
         }
     })
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
         val couleurList: List<CouleurEnum> = CouleurEnum.entries.toList()
         val couleurStringList: List<String> = couleurList.map { it.stringValue }
         var couleurSelected by remember { mutableStateOf(couleurList.getOrNull(0)) }
@@ -78,7 +80,9 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
 
         var gagne by remember { mutableStateOf(false) }
         Row(
-            modifier = Modifier.height(40.dp)
+            modifier = Modifier
+                .height(40.dp)
+                .padding(top = 8.dp)
         ) {
             Text(
                 modifier = Modifier
@@ -95,7 +99,7 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
             nomJoueur = joueurSelected?.nom, couleurSelected, gagne
         )
 
-        Button(onClick = {
+        Button(modifier = Modifier.align(Alignment.End), onClick = {
             coroutineScope.launch {
                 if (partieUI.nomJoueur != null) {
                     partieViewModel.savePartie(partieUI)

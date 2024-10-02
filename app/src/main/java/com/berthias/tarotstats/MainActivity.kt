@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.berthias.tarotstats.navigation.TarotNavHost
@@ -21,7 +22,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             TarotStatsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerpadding ->
-                    TarotApp(modifier = Modifier.padding(innerpadding))
+                    TarotApp(
+                        modifier = Modifier
+                            .padding(innerpadding)
+                            .padding(8.dp)
+                    )
                 }
             }
         }
@@ -30,8 +35,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TarotApp(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()
 ) {
     TarotNavHost(modifier = modifier, navController = navController)
 }
