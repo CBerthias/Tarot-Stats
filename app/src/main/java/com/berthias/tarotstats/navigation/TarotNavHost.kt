@@ -11,12 +11,14 @@ import com.berthias.tarotstats.screen.AddPartieDestination
 import com.berthias.tarotstats.screen.AddPartieScreen
 import com.berthias.tarotstats.screen.ListeJoueursDestination
 import com.berthias.tarotstats.screen.ListeJoueursScreen
+import com.berthias.tarotstats.screen.ListePartiesDestination
+import com.berthias.tarotstats.screen.ListePartiesScreen
 
 @Composable
 fun TarotNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination =AddPartieDestination.route,
+        startDestination = ListePartiesDestination.route,
         modifier = modifier
     ) {
         composable(route = ListeJoueursDestination.route) {
@@ -27,6 +29,9 @@ fun TarotNavHost(navController: NavHostController, modifier: Modifier = Modifier
         }
         composable(route = AddPartieDestination.route) {
             AddPartieScreen(onValidate = { navController.navigateUp() })
+        }
+        composable(route = ListePartiesDestination.route) {
+            ListePartiesScreen(navigateToAddPartie = { navController.navigate(AddPartieDestination.route) })
         }
     }
 }

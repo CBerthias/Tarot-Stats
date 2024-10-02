@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -35,9 +37,10 @@ object ListeJoueursDestination : NavigationDestination {
 fun ListeJoueursScreen(modifier: Modifier = Modifier, navigateToAddJoueur: () -> Unit) {
     Box(modifier = modifier) {
         ListeJoueurs(modifier = Modifier.fillMaxSize())
-        FloatingActionButton(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(16.dp),
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
             onClick = {
                 navigateToAddJoueur()
             }) {
@@ -48,13 +51,13 @@ fun ListeJoueursScreen(modifier: Modifier = Modifier, navigateToAddJoueur: () ->
 
 @Composable
 fun ListeJoueurs(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        val joueurViewModel =
-            viewModel<JoueurViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return JoueurViewModel() as T
-                }
-            })
+    val joueurViewModel = viewModel<JoueurViewModel>(factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return JoueurViewModel() as T
+        }
+    })
+    val scrollState = rememberScrollState()
+    Column(modifier = modifier.verticalScroll(scrollState)) {
         val listJoueurs by joueurViewModel.listJoueurs.collectAsState()
         for (joueur: Joueur in listJoueurs) {
             Row {

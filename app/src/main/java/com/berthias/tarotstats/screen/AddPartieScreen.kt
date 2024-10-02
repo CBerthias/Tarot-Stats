@@ -97,9 +97,16 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
 
         Button(onClick = {
             coroutineScope.launch {
-                if (partieUI.nomJoueur != null && partieUI.couleur != null) {
+                if (partieUI.nomJoueur != null) {
                     partieViewModel.savePartie(partieUI)
                     onValidate()
+                } else {
+                    joueurSelected = joueurList.getOrNull(0)
+                    if (joueurSelected != null) {
+                        partieUI.nomJoueur = joueurSelected!!.nom
+                        partieViewModel.savePartie(partieUI)
+                        onValidate()
+                    }
                 }
             }
         }) {
