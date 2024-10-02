@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.berthias.tarotstats.navigation.TarotNavHost
+import com.berthias.tarotstats.screen.HomeDestination
 import com.berthias.tarotstats.screen.ListeJoueursDestination
 import com.berthias.tarotstats.screen.ListePartiesDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
@@ -51,6 +52,13 @@ fun TarotApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet {
+            NavigationDrawerItem(label = { Text(text = "Accueil") }, onClick = {
+                navController.navigate(HomeDestination.route)
+                coroutineScope.launch {
+                    drawerState.close()
+                }
+            }, selected = false
+            )
             NavigationDrawerItem(label = { Text(text = "Joueurs") }, onClick = {
                 navController.navigate(ListeJoueursDestination.route)
                 coroutineScope.launch {

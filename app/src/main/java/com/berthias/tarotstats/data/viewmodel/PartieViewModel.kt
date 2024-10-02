@@ -33,6 +33,13 @@ class PartieViewModel : ViewModel() {
         initialValue = emptyList()
     )
 
+    fun getWinRateByRoi() {
+
+    }
+
+    fun getWinRateByJoueur() {}
+    fun getPickRateByJoueur() {}
+
     suspend fun savePartie(partieUI: PartieUI) {
         val partie: Partie? = partieUI.toPartie()
         if (partie != null) partieRepository.insert(partie)
