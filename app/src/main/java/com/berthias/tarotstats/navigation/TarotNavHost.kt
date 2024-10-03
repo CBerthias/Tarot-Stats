@@ -1,5 +1,6 @@
 package com.berthias.tarotstats.navigation
 
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -17,24 +18,28 @@ import com.berthias.tarotstats.screen.ListePartiesDestination
 import com.berthias.tarotstats.screen.ListePartiesScreen
 
 @Composable
-fun TarotNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+fun TarotNavHost(
+    navController: NavHostController, drawerState: DrawerState, modifier: Modifier = Modifier
+) {
     NavHost(
         navController = navController, startDestination = HomeDestination.route, modifier = modifier
     ) {
         composable(route = HomeDestination.route) {
-            HomeScreen()
+            HomeScreen(drawerState = drawerState)
         }
         composable(route = ListeJoueursDestination.route) {
-            ListeJoueursScreen(navigateToAddJoueur = { navController.navigate(AddJoueurDestination.route) })
+            ListeJoueursScreen(drawerState = drawerState,
+                navigateToAddJoueur = { navController.navigate(AddJoueurDestination.route) })
         }
         composable(route = AddJoueurDestination.route) {
-            AddJoueurScreen(onValidate = { navController.navigateUp() })
+            AddJoueurScreen(drawerState = drawerState, onValidate = { navController.navigateUp() })
         }
         composable(route = AddPartieDestination.route) {
-            AddPartieScreen(onValidate = { navController.navigateUp() })
+            AddPartieScreen(drawerState = drawerState, onValidate = { navController.navigateUp() })
         }
         composable(route = ListePartiesDestination.route) {
-            ListePartiesScreen(navigateToAddPartie = { navController.navigate(AddPartieDestination.route) })
+            ListePartiesScreen(drawerState = drawerState,
+                navigateToAddPartie = { navController.navigate(AddPartieDestination.route) })
         }
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,17 +21,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.JoueurViewModel
 import com.berthias.tarotstats.data.viewmodel.PartieUI
 import com.berthias.tarotstats.data.viewmodel.PartieViewModel
 import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
-import com.berthias.tarotstats.ui.theme.TarotStatsTheme
 import com.berthias.tarotstats.util.DropdownBox
 import kotlinx.coroutines.launch
 
@@ -42,8 +43,14 @@ object AddPartieDestination : NavigationDestination {
 }
 
 @Composable
-fun AddPartieScreen(modifier: Modifier = Modifier, onValidate: () -> Unit) {
-    AddPartieForm(modifier = modifier) { onValidate() }
+fun AddPartieScreen(drawerState: DrawerState, onValidate: () -> Unit) {
+    Scaffold(topBar = {
+        TarotTopAppBar(
+            title = AddPartieDestination.title, drawerState = drawerState
+        )
+    }) { innerpadding ->
+        AddPartieForm(modifier = Modifier.padding(innerpadding)) { onValidate() }
+    }
 }
 
 @Composable
@@ -65,7 +72,7 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
     Column(modifier = modifier.fillMaxWidth()) {
         val couleurList: List<CouleurEnum> = CouleurEnum.entries.toList()
         val couleurStringList: List<String> = couleurList.map { it.stringValue }
-        var couleurSelected by remember { mutableStateOf(couleurList.getOrNull(0)) }
+        var couleurSelected by remember { mutableStateOf(couleurList[0]) }
         DropdownBox(valueList = couleurStringList, label = "Roi appelé") {
             couleurSelected = couleurList[it]
         }
@@ -96,7 +103,7 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
         }
 
         val partieUI = PartieUI(
-            nomJoueur = joueurSelected?.nom, couleurSelected, gagne
+            0, joueurSelected?.nom, couleurSelected, gagne
         )
 
         Button(modifier = Modifier.align(Alignment.End), onClick = {
@@ -116,13 +123,5 @@ fun AddPartieForm(modifier: Modifier = Modifier, onValidate: () -> Unit) {
         }) {
             Text(text = "Enregistrer la partie")
         }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun AddPartieFormPreview() {
-    TarotStatsTheme {
-        AddPartieForm { }
     }
 }

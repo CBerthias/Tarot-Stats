@@ -7,19 +7,20 @@ import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.model.Partie
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 data class PartieUI(
-    var nomJoueur: String?, var couleur: CouleurEnum?, var gagne: Boolean
+    var id: Long, var nomJoueur: String?, var couleur: CouleurEnum, var gagne: Boolean
 ) {
     fun toPartie(): Partie? {
-        return if (nomJoueur != null && couleur != null) Partie(0, nomJoueur!!, couleur!!, gagne)
+        return if (nomJoueur != null && couleur != null) Partie(id, nomJoueur!!, couleur!!, gagne)
         else null
     }
 
     companion object {
         fun fromPartie(partie: Partie): PartieUI {
-            return PartieUI(partie.nomJoueur, partie.couleur, partie.gagne)
+            return PartieUI(partie.id, partie.nomJoueur, partie.couleur, partie.gagne)
         }
     }
 }
@@ -27,21 +28,25 @@ data class PartieUI(
 class PartieViewModel : ViewModel() {
     private val partieRepository = TarotApplication.application.appContainer.partieRepository
 
-    val listParties: StateFlow<List<Partie>> = partieRepository.getAllParties().stateIn(
+    val listParties: StateFlow<List<PartieUI>> = partieRepository.getAllParties().map { l ->
+        val newList: ArrayList<PartieUI> = ArrayList()
+        l.forEach { p ->
+            newList.add(PartieUI.fromPartie(p))
+        }
+        newList
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(10_000L),
         initialValue = emptyList()
     )
 
-    fun getWinRateByRoi() {
-
-    }
-
-    fun getWinRateByJoueur() {}
-    fun getPickRateByJoueur() {}
-
     suspend fun savePartie(partieUI: PartieUI) {
         val partie: Partie? = partieUI.toPartie()
         if (partie != null) partieRepository.insert(partie)
+    }
+
+    suspend fun deletePartie(partieUI: PartieUI) {
+        val partie: Partie? = partieUI.toPartie()
+        if (partie != null) partieRepository.delete(partie)
     }
 }

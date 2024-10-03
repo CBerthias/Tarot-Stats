@@ -9,8 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,8 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.berthias.tarotstats.TarotTopAppBar
+import com.berthias.tarotstats.data.viewmodel.JoueurUI
 import com.berthias.tarotstats.data.viewmodel.JoueurViewModel
-import com.berthias.tarotstats.model.Joueur
 import com.berthias.tarotstats.navigation.NavigationDestination
 
 object ListeJoueursDestination : NavigationDestination {
@@ -34,17 +37,23 @@ object ListeJoueursDestination : NavigationDestination {
 }
 
 @Composable
-fun ListeJoueursScreen(modifier: Modifier = Modifier, navigateToAddJoueur: () -> Unit) {
-    Box(modifier = modifier) {
-        ListeJoueurs(modifier = Modifier.fillMaxSize())
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            onClick = {
-                navigateToAddJoueur()
-            }) {
-            Icon(Icons.Filled.Add, "add button")
+fun ListeJoueursScreen(drawerState: DrawerState, navigateToAddJoueur: () -> Unit) {
+    Scaffold(topBar = {
+        TarotTopAppBar(
+            title = ListeJoueursDestination.title, drawerState = drawerState
+        )
+    }) { innerpadding ->
+        Box(modifier = Modifier.padding(innerpadding)) {
+            ListeJoueurs(modifier = Modifier.fillMaxSize())
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                onClick = {
+                    navigateToAddJoueur()
+                }) {
+                Icon(Icons.Filled.Add, "add button")
+            }
         }
     }
 }
@@ -59,7 +68,7 @@ fun ListeJoueurs(modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
     Column(modifier = modifier.verticalScroll(scrollState)) {
         val listJoueurs by joueurViewModel.listJoueurs.collectAsState()
-        for (joueur: Joueur in listJoueurs) {
+        for (joueur: JoueurUI in listJoueurs) {
             Row {
                 Text(joueur.nom)
             }

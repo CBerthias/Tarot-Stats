@@ -6,6 +6,7 @@ import com.berthias.tarotstats.TarotApplication
 import com.berthias.tarotstats.model.Joueur
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 data class JoueurUI(var nom: String) {
@@ -19,7 +20,13 @@ data class JoueurUI(var nom: String) {
 class JoueurViewModel : ViewModel() {
     val joueurRepository = TarotApplication.application.appContainer.joueurRepository
 
-    val listJoueurs: StateFlow<List<Joueur>> = joueurRepository.getAllJoueurs().stateIn(
+    val listJoueurs: StateFlow<List<JoueurUI>> = joueurRepository.getAllJoueurs().map { l ->
+        val newListe: ArrayList<JoueurUI> = ArrayList()
+        l.forEach { j ->
+            newListe.add(JoueurUI.fromJoueur(j))
+        }
+        newListe
+    }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(10_000L),
         initialValue = emptyList()
