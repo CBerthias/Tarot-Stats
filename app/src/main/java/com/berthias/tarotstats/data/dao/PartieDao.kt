@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.berthias.tarotstats.model.CouleurEnum
-import com.berthias.tarotstats.model.Joueur
 import com.berthias.tarotstats.model.Partie
 import kotlinx.coroutines.flow.Flow
 

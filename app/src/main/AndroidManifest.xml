@@ -14,19 +14,8 @@
         android:theme="@style/Theme.TarotStats"
         tools:targetApi="31">
         <activity
-            android:name=".ListeJoueursActivity"
-            android:exported="false"
-            android:label="@string/title_activity_liste_joueurs"
-            android:theme="@style/Theme.TarotStats" />
-        <activity
-            android:name=".AddJoueurActivity"
-            android:exported="false"
-            android:label="@string/title_activity_add_joueur"
-            android:theme="@style/Theme.TarotStats" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.TarotStats">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

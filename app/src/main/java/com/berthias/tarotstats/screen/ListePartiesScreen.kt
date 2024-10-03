@@ -117,7 +117,7 @@ fun ListeParties(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.width(32.dp))
         }
-        val scrollState = rememberScrollState();
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .weight(1F)

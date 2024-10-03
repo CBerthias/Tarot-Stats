@@ -14,7 +14,7 @@ data class PartieUI(
     var id: Long, var nomJoueur: String?, var couleur: CouleurEnum, var gagne: Boolean
 ) {
     fun toPartie(): Partie? {
-        return if (nomJoueur != null && couleur != null) Partie(id, nomJoueur!!, couleur!!, gagne)
+        return if (nomJoueur != null) Partie(id, nomJoueur!!, couleur, gagne)
         else null
     }
 

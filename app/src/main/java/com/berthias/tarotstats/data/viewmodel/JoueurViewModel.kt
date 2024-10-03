@@ -18,7 +18,7 @@ data class JoueurUI(var nom: String) {
 }
 
 class JoueurViewModel : ViewModel() {
-    val joueurRepository = TarotApplication.application.appContainer.joueurRepository
+    private val joueurRepository = TarotApplication.application.appContainer.joueurRepository
 
     val listJoueurs: StateFlow<List<JoueurUI>> = joueurRepository.getAllJoueurs().map { l ->
         val newListe: ArrayList<JoueurUI> = ArrayList()
