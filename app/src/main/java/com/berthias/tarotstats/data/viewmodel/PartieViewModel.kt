@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import java.util.stream.Collectors
 
 data class PartieUI(
     var id: Long, var nomJoueur: String?, var couleur: CouleurEnum, var gagne: Boolean
@@ -48,5 +49,11 @@ class PartieViewModel : ViewModel() {
     suspend fun deletePartie(partieUI: PartieUI) {
         val partie: Partie? = partieUI.toPartie()
         if (partie != null) partieRepository.delete(partie)
+    }
+
+    fun getPartiesForJoueur(joueurUINom: String, parties: List<PartieUI>): List<PartieUI> {
+        return parties.stream().filter { partie ->
+            partie.nomJoueur == joueurUINom
+        }.collect(Collectors.toList())
     }
 }

@@ -12,6 +12,8 @@ import com.berthias.tarotstats.screen.AddPartieDestination
 import com.berthias.tarotstats.screen.AddPartieScreen
 import com.berthias.tarotstats.screen.HomeDestination
 import com.berthias.tarotstats.screen.HomeScreen
+import com.berthias.tarotstats.screen.InfosJoueurDestination
+import com.berthias.tarotstats.screen.InfosJoueurScreen
 import com.berthias.tarotstats.screen.ListeJoueursDestination
 import com.berthias.tarotstats.screen.ListeJoueursScreen
 import com.berthias.tarotstats.screen.ListePartiesDestination
@@ -29,7 +31,10 @@ fun TarotNavHost(
         }
         composable(route = ListeJoueursDestination.route) {
             ListeJoueursScreen(drawerState = drawerState,
-                navigateToAddJoueur = { navController.navigate(AddJoueurDestination.route) })
+                navigateToAddJoueur = { navController.navigate(AddJoueurDestination.route) },
+                navigateToInfosJoueur = { joueurUI ->
+                    navController.navigate(InfosJoueurDestination.getRoute(joueurUI.nom))
+                })
         }
         composable(route = AddJoueurDestination.route) {
             AddJoueurScreen(drawerState = drawerState, onValidate = { navController.navigateUp() })
@@ -40,6 +45,13 @@ fun TarotNavHost(
         composable(route = ListePartiesDestination.route) {
             ListePartiesScreen(drawerState = drawerState,
                 navigateToAddPartie = { navController.navigate(AddPartieDestination.route) })
+        }
+        composable(
+            route = InfosJoueurDestination.route + "{joueur}"
+        ) {
+            InfosJoueurScreen(
+                drawerState = drawerState, joueurUINom = it.arguments?.getString("joueur") ?: ""
+            )
         }
     }
 }
