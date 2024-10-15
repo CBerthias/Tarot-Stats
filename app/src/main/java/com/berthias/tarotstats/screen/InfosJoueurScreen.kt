@@ -1,11 +1,15 @@
 package com.berthias.tarotstats.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,20 +17,23 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.berthias.tarotstats.R
 import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.PartieUI
 import com.berthias.tarotstats.data.viewmodel.PartieViewModel
 import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
-import java.util.EnumMap
+import com.berthias.tarotstats.util.Winrates
 
 object InfosJoueurDestination : NavigationDestination {
     override var route: String = "infosJoueur/"
@@ -56,41 +63,98 @@ fun InfosJoueurScreen(drawerState: DrawerState, joueurUINom: String) {
         StatsJoueur(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(8.dp),
-            parties = partiesForJoueur
+                .padding(8.dp), parties = partiesForJoueur
         )
     }
 }
 
 @Composable
 fun StatsJoueur(modifier: Modifier = Modifier, parties: List<PartieUI>) {
-    var gagnees = 0
-    val nbPartiesRoi: EnumMap<CouleurEnum, Int> = EnumMap(CouleurEnum::class.java)
-    val nbWinRoi: EnumMap<CouleurEnum, Int> = EnumMap(CouleurEnum::class.java)
-    for (partie in parties) {
-        if (partie.gagne) {
-            gagnees++
-            nbWinRoi[partie.couleur] = nbWinRoi.getOrDefault(partie.couleur, 0) + 1
-        }
-        nbPartiesRoi[partie.couleur] = nbPartiesRoi.getOrDefault(partie.couleur, 0) + 1
-    }
     Column(modifier = modifier) {
-        Text(
-            text = "Winrate global: %.0f".format(gagnees.div(parties.size.toFloat()) * 100) + "%",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
+        RawValues(parties = parties)
+        Winrates(parties = parties)
+    }
+}
+
+@Composable
+fun RawValues(modifier: Modifier = Modifier, parties: List<PartieUI>) {
+    val nbParties = parties.size
+    val nbWin = parties.stream().filter { partie ->
+        partie.gagne
+    }.count()
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        Card(
             modifier = Modifier
-                .height(30.dp)
-                .wrapContentHeight(Alignment.CenterVertically)
-        )
-        HorizontalDivider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
-        for (couleur in CouleurEnum.entries) {
-            val winrate: Float = nbWinRoi.getOrDefault(couleur, 0)
-                .div(nbPartiesRoi.getOrDefault(couleur, 0).toFloat()) * 100
-            Text(text = "Winrate Roi de %s appelé: %.0f".format(couleur.stringValue, winrate) + "%")
+                .padding(8.dp)
+                .size(100.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "Parties jouées",
+                    textAlign = TextAlign.Center,
+                    fontSize = 12.sp
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = nbParties.toString(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 40.sp
+                )
+            }
+        }
+        Card(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(100.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                val trophee = painterResource(R.drawable.trophee)
+                Image(
+                    modifier = Modifier.size(25.dp),
+                    painter = trophee,
+                    contentDescription = "Victoires"
+                )
+                Text(text = nbWin.toString(), fontSize = 40.sp)
+            }
+        }
+        Card(
+            modifier = Modifier
+                .padding(8.dp)
+                .size(100.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row {
+                    val trophee = painterResource(R.drawable.trophee)
+                    Image(
+                        modifier = Modifier.size(25.dp),
+                        painter = trophee,
+                        contentDescription = "Victoires"
+                    )
+                    Text(text = "%", fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
+                }
+                var winrate: Float = nbWin.div(nbParties.toFloat()) * 100
+                if (winrate.isNaN()) winrate = 0F
+                Text(text = "%.0f".format(winrate) + "%", fontSize = 35.sp)
+            }
         }
     }
-
 }
 
 @Preview(showBackground = true)
@@ -100,7 +164,7 @@ fun StatsJoueurPreview() {
         StatsJoueur(
             parties = listOf(
                 PartieUI(1L, "Corentin", CouleurEnum.TREFLE, true),
-                PartieUI(2L, "Corentin", CouleurEnum.TREFLE, false),
+                PartieUI(2L, "Corentin", CouleurEnum.TREFLE, true),
                 PartieUI(3L, "Corentin", CouleurEnum.CARREAU, true),
             )
         )

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,10 +59,9 @@ fun ListeJoueursScreen(
             ListeJoueurs(
                 modifier = Modifier.fillMaxSize(), navigateToInfosJoueur = navigateToInfosJoueur
             )
-            FloatingActionButton(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+            FloatingActionButton(modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
                 onClick = {
                     navigateToAddJoueur()
                 }) {
@@ -79,9 +79,13 @@ fun ListeJoueurs(modifier: Modifier = Modifier, navigateToInfosJoueur: (JoueurUI
         }
     })
     val scrollState = rememberScrollState()
-    Column(modifier = modifier.verticalScroll(scrollState)) {
-        val listJoueurs by joueurViewModel.listJoueurs.collectAsState()
-        for (joueur: JoueurUI in listJoueurs) {
+    val listJoueurs by joueurViewModel.listJoueurs.collectAsState()
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .verticalScroll(scrollState)
+    ) {
+        listJoueurs.forEach { joueur ->
             RowJoueur(joueurUI = joueur, navigateToInfosJoueur = navigateToInfosJoueur)
         }
     }

@@ -118,12 +118,12 @@ fun ListeParties(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.width(32.dp))
         }
         val scrollState = rememberScrollState()
+        val listePartiesUI by partieViewModel.listParties.collectAsState()
         Column(
             modifier = Modifier
                 .weight(1F)
                 .verticalScroll(scrollState)
         ) {
-            val listePartiesUI by partieViewModel.listParties.collectAsState()
             listePartiesUI.forEach { partieUI ->
                 var expanded by remember { mutableStateOf(false) }
                 HorizontalDivider(modifier = Modifier.padding(start = 16.dp, end = 32.dp))
