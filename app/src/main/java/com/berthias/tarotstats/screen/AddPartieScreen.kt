@@ -112,38 +112,22 @@ fun AddPartieForm(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ColorButtonSelector(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .weight(1f),
-                image = painterResource(R.drawable.trefle),
-                couleur = CouleurEnum.TREFLE,
-                selected = couleurSelected == CouleurEnum.TREFLE
-            ) { couleurSelected = CouleurEnum.TREFLE }
-            ColorButtonSelector(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .weight(1f),
-                image = painterResource(R.drawable.coeur),
-                couleur = CouleurEnum.COEUR,
-                selected = couleurSelected == CouleurEnum.COEUR
-            ) { couleurSelected = CouleurEnum.COEUR }
-            ColorButtonSelector(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .weight(1f),
-                image = painterResource(R.drawable.pique),
-                couleur = CouleurEnum.PIQUE,
-                selected = couleurSelected == CouleurEnum.PIQUE
-            ) { couleurSelected = CouleurEnum.PIQUE }
-            ColorButtonSelector(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .weight(1f),
-                image = painterResource(R.drawable.carreau),
-                couleur = CouleurEnum.CARREAU,
-                selected = couleurSelected == CouleurEnum.CARREAU
-            ) { couleurSelected = CouleurEnum.CARREAU }
+            CouleurEnum.entries.forEach { couleur ->
+                val painter = when (couleur) {
+                    CouleurEnum.CARREAU -> painterResource(R.drawable.carreau)
+                    CouleurEnum.COEUR -> painterResource(R.drawable.coeur)
+                    CouleurEnum.PIQUE -> painterResource(R.drawable.pique)
+                    CouleurEnum.TREFLE -> painterResource(R.drawable.trefle)
+                }
+                ColorButtonSelector(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .weight(1f),
+                    image = painter,
+                    couleur = couleur,
+                    selected = couleurSelected == couleur
+                ) { couleurSelected = couleur }
+            }
         }
 
         val joueurStringList =

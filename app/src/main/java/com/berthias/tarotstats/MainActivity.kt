@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
@@ -21,6 +22,9 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.berthias.tarotstats.navigation.TarotNavHost
@@ -28,6 +32,7 @@ import com.berthias.tarotstats.screen.HomeDestination
 import com.berthias.tarotstats.screen.ListeJoueursDestination
 import com.berthias.tarotstats.screen.ListePartiesDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
+import com.berthias.tarotstats.util.ResizableText
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -65,21 +70,33 @@ fun TarotApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         ModalDrawerSheet(modifier = Modifier.fillMaxWidth(0.7F)) {
-            NavigationDrawerItem(label = { Text(text = "Stats") }, onClick = {
+            NavigationDrawerItem(modifier = Modifier.padding(8.dp), label = {
+                ResizableText(
+                    text = "Stats", style = TextStyle(fontSize = 30.sp)
+                )
+            }, onClick = {
                 navController.navigate(HomeDestination.route)
                 coroutineScope.launch {
                     drawerState.close()
                 }
             }, selected = false
             )
-            NavigationDrawerItem(label = { Text(text = "Joueurs") }, onClick = {
+            NavigationDrawerItem(modifier = Modifier.padding(8.dp), label = {
+                ResizableText(
+                    text = "Joueurs", style = TextStyle(fontSize = 30.sp)
+                )
+            }, onClick = {
                 navController.navigate(ListeJoueursDestination.route)
                 coroutineScope.launch {
                     drawerState.close()
                 }
             }, selected = false
             )
-            NavigationDrawerItem(label = { Text(text = "Parties") }, onClick = {
+            NavigationDrawerItem(modifier = Modifier.padding(8.dp), label = {
+                ResizableText(
+                    text = "Parties", style = TextStyle(fontSize = 30.sp)
+                )
+            }, onClick = {
                 navController.navigate(ListePartiesDestination.route)
                 coroutineScope.launch {
                     drawerState.close()
