@@ -41,9 +41,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,6 +61,7 @@ import com.berthias.tarotstats.data.viewmodel.PartieViewModel
 import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
+import com.berthias.tarotstats.util.ResizableText
 import kotlinx.coroutines.launch
 
 object ListePartiesDestination : NavigationDestination {
@@ -96,10 +99,9 @@ fun ListePartiesScreen(drawerState: DrawerState, navigateToAddPartie: () -> Unit
                     partieViewModel.deletePartie(partieUI)
                 }
             })
-            FloatingActionButton(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
+            FloatingActionButton(modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
                 onClick = {
                     navigateToAddPartie()
                 }) {
@@ -149,19 +151,21 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                ResizableText(
                     text = "Joueur",
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                    ),
                     modifier = Modifier
                         .weight(1F)
                         .fillMaxHeight()
                         .wrapContentHeight(Alignment.CenterVertically)
                 )
-                if (joueurOrder != OrderTri.NONE) {
-                    Icon(getIconOrder(joueurOrder), "order $joueurOrder")
-                }
+                Icon(
+                    modifier = Modifier.alpha(if (joueurOrder == OrderTri.NONE) 0f else 1f),
+                    imageVector = getIconOrder(joueurOrder),
+                    contentDescription = "order $joueurOrder"
+                )
             }
             Row(
                 modifier = Modifier
@@ -172,19 +176,21 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                ResizableText(
                     text = "Roi",
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                    ),
                     modifier = Modifier
                         .weight(1F)
                         .fillMaxHeight()
                         .wrapContentHeight(Alignment.CenterVertically)
                 )
-                if (roiOrder != OrderTri.NONE) {
-                    Icon(getIconOrder(roiOrder), "order $roiOrder")
-                }
+                Icon(
+                    modifier = Modifier.alpha(if (roiOrder == OrderTri.NONE) 0f else 1f),
+                    imageVector = getIconOrder(roiOrder),
+                    contentDescription = "order $roiOrder"
+                )
             }
             Row(
                 modifier = Modifier
@@ -195,19 +201,21 @@ fun ListePartiesContent(
                         victoireOrder = rotateOrder(victoireOrder)
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
+                ResizableText(
                     text = "Victoire",
-                    fontSize = 23.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                    ),
                     modifier = Modifier
                         .weight(1F)
                         .fillMaxHeight()
                         .wrapContentHeight(Alignment.CenterVertically)
                 )
-                if (victoireOrder != OrderTri.NONE) {
-                    Icon(getIconOrder(victoireOrder), "order $victoireOrder")
-                }
+                Icon(
+                    modifier = Modifier.alpha(if (victoireOrder == OrderTri.NONE) 0f else 1f),
+                    imageVector = getIconOrder(victoireOrder),
+                    contentDescription = "order $victoireOrder"
+                )
             }
             Spacer(modifier = Modifier.width(32.dp))
         }
