@@ -4,20 +4,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +35,7 @@ import com.berthias.tarotstats.data.viewmodel.PartieViewModel
 import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
+import com.berthias.tarotstats.util.ResizableText
 import com.berthias.tarotstats.util.Winrates
 
 object InfosJoueurDestination : NavigationDestination {
@@ -90,68 +93,104 @@ fun RawValues(modifier: Modifier = Modifier, parties: List<PartieUI>) {
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .size(100.dp)
+                .weight(1f)
+                .aspectRatio(1f)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                ResizableText(
+                    modifier = Modifier
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                        .wrapContentHeight(Alignment.Bottom),
                     text = "Parties jouées",
-                    textAlign = TextAlign.Center,
-                    fontSize = 12.sp
+                    style = TextStyle(
+                        textAlign = TextAlign.Center, fontSize = 30.sp
+                    )
                 )
-                Text(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                ResizableText(
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .align(Alignment.CenterHorizontally),
                     text = nbParties.toString(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 40.sp
+                    style = TextStyle(
+                        textAlign = TextAlign.Center, fontSize = 50.sp
+                    )
                 )
             }
         }
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .size(100.dp)
+                .weight(1f)
+                .aspectRatio(1f)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 val trophee = painterResource(R.drawable.trophee)
                 Image(
-                    modifier = Modifier.size(25.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .aspectRatio(1f),
                     painter = trophee,
                     contentDescription = "Victoires"
                 )
-                Text(text = nbWin.toString(), fontSize = 40.sp)
+                ResizableText(
+                    modifier = Modifier.weight(1.5f),
+                    text = nbWin.toString(),
+                    style = TextStyle(fontSize = 50.sp)
+                )
             }
         }
         Card(
             modifier = Modifier
                 .padding(8.dp)
-                .size(100.dp)
+                .weight(1f)
+                .aspectRatio(1f)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Row {
+                Row(
+                    modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically
+                ) {
                     val trophee = painterResource(R.drawable.trophee)
                     Image(
-                        modifier = Modifier.size(25.dp),
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .aspectRatio(1f),
                         painter = trophee,
                         contentDescription = "Victoires"
                     )
-                    Text(text = "%", fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
+                    ResizableText(
+                        text = "%",
+                        style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.SemiBold)
+                    )
                 }
-                var winrate: Float = nbWin.div(nbParties.toFloat()) * 100
-                if (winrate.isNaN()) winrate = 0F
-                Text(text = "%.0f".format(winrate) + "%", fontSize = 35.sp)
+                val winrate: Float = nbWin.div(nbParties.toFloat()) * 100
+                val winrateString = if (winrate.isNaN()) "-%" else "%.0f".format(winrate) + "%"
+                ResizableText(
+                    modifier = Modifier
+                        .weight(1.5f)
+                        .padding(4.dp),
+                    text = winrateString,
+                    style = TextStyle(fontSize = 50.sp)
+                )
             }
         }
     }
@@ -163,9 +202,9 @@ fun StatsJoueurPreview() {
     TarotStatsTheme {
         StatsJoueur(
             parties = listOf(
-                PartieUI(1L, "Corentin", CouleurEnum.TREFLE, true),
-                PartieUI(2L, "Corentin", CouleurEnum.TREFLE, true),
-                PartieUI(3L, "Corentin", CouleurEnum.CARREAU, true),
+                PartieUI(1L, "Corentin", CouleurEnum.TREFLE, true, "Josh"),
+                PartieUI(2L, "Corentin", CouleurEnum.TREFLE, true, "Thibault"),
+                PartieUI(3L, "Corentin", CouleurEnum.CARREAU, true, "Tanguy")
             )
         )
     }

@@ -1,5 +1,6 @@
 package com.berthias.tarotstats.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -9,5 +10,7 @@ data class Partie(
     val id: Long,
     val nomJoueur: String,
     val couleur: CouleurEnum,
-    val gagne: Boolean
+    val gagne: Boolean,
+    @ColumnInfo(defaultValue = "")
+    val coequipier: String,
 )

@@ -12,16 +12,24 @@ import kotlinx.coroutines.flow.stateIn
 import java.util.stream.Collectors
 
 data class PartieUI(
-    var id: Long, var nomJoueur: String?, var couleur: CouleurEnum, var gagne: Boolean
+    var id: Long,
+    var nomJoueur: String?,
+    var couleur: CouleurEnum,
+    var gagne: Boolean,
+    var coequipier: String?
 ) {
     fun toPartie(): Partie? {
-        return if (nomJoueur != null) Partie(id, nomJoueur!!, couleur, gagne)
+        return if (nomJoueur != null) Partie(
+            id, nomJoueur!!, couleur, gagne, coequipier ?: nomJoueur!!
+        )
         else null
     }
 
     companion object {
         fun fromPartie(partie: Partie): PartieUI {
-            return PartieUI(partie.id, partie.nomJoueur, partie.couleur, partie.gagne)
+            return PartieUI(
+                partie.id, partie.nomJoueur, partie.couleur, partie.gagne, partie.coequipier
+            )
         }
     }
 }
