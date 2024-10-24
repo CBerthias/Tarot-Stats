@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -99,9 +100,10 @@ fun ListePartiesScreen(drawerState: DrawerState, navigateToAddPartie: () -> Unit
                     partieViewModel.deletePartie(partieUI)
                 }
             })
-            FloatingActionButton(modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
                 onClick = {
                     navigateToAddPartie()
                 }) {
@@ -142,6 +144,14 @@ fun ListePartiesContent(
 
     Column(modifier = modifier.fillMaxSize()) {
         Row(modifier = Modifier.height(50.dp)) {
+            var resizedTextStyle: TextStyle by remember {
+                mutableStateOf(
+                    TextStyle(
+                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                    )
+                )
+            }
+            var shouldDraw: Boolean by remember { mutableStateOf(false) }
             Row(
                 modifier = Modifier
                     .weight(1F)
@@ -151,16 +161,27 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                ResizableText(
+                Text(modifier = modifier
+                    .weight(1F)
+                    .fillMaxHeight()
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .drawWithContent {
+                        if (shouldDraw) {
+                            drawContent()
+                        }
+                    },
                     text = "Joueur",
-                    style = TextStyle(
-                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .weight(1F)
-                        .fillMaxHeight()
-                        .wrapContentHeight(Alignment.CenterVertically)
-                )
+                    style = resizedTextStyle,
+                    softWrap = false,
+                    onTextLayout = { result ->
+                        if (result.didOverflowWidth || result.didOverflowHeight) {
+                            resizedTextStyle =
+                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
+                            shouldDraw = false
+                        } else {
+                            shouldDraw = true
+                        }
+                    })
                 Icon(
                     modifier = Modifier.alpha(if (joueurOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(joueurOrder),
@@ -176,16 +197,27 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                ResizableText(
+                Text(modifier = modifier
+                    .weight(1F)
+                    .fillMaxHeight()
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .drawWithContent {
+                        if (shouldDraw) {
+                            drawContent()
+                        }
+                    },
                     text = "Roi",
-                    style = TextStyle(
-                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .weight(1F)
-                        .fillMaxHeight()
-                        .wrapContentHeight(Alignment.CenterVertically)
-                )
+                    style = resizedTextStyle,
+                    softWrap = false,
+                    onTextLayout = { result ->
+                        if (result.didOverflowWidth || result.didOverflowHeight) {
+                            resizedTextStyle =
+                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
+                            shouldDraw = false
+                        } else {
+                            shouldDraw = true
+                        }
+                    })
                 Icon(
                     modifier = Modifier.alpha(if (roiOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(roiOrder),
@@ -201,16 +233,27 @@ fun ListePartiesContent(
                         victoireOrder = rotateOrder(victoireOrder)
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                ResizableText(
+                Text(modifier = modifier
+                    .weight(1F)
+                    .fillMaxHeight()
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .drawWithContent {
+                        if (shouldDraw) {
+                            drawContent()
+                        }
+                    },
                     text = "Victoire",
-                    style = TextStyle(
-                        fontSize = 23.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .weight(1F)
-                        .fillMaxHeight()
-                        .wrapContentHeight(Alignment.CenterVertically)
-                )
+                    style = resizedTextStyle,
+                    softWrap = false,
+                    onTextLayout = { result ->
+                        if (result.didOverflowWidth || result.didOverflowHeight) {
+                            resizedTextStyle =
+                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
+                            shouldDraw = false
+                        } else {
+                            shouldDraw = true
+                        }
+                    })
                 Icon(
                     modifier = Modifier.alpha(if (victoireOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(victoireOrder),
@@ -252,10 +295,11 @@ fun RowPartie(modifier: Modifier = Modifier, partieUI: PartieUI, onDelete: (Part
             CouleurEnum.PIQUE -> MaterialTheme.colorScheme.onPrimaryContainer
             CouleurEnum.TREFLE -> MaterialTheme.colorScheme.onPrimaryContainer
         }
-        Text(
+        ResizableText(
             text = partieUI.nomJoueur!!,
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center,
+            style = TextStyle(
+                fontSize = 20.sp, textAlign = TextAlign.Center
+            ),
             modifier = Modifier
                 .weight(1F)
                 .fillMaxHeight()
