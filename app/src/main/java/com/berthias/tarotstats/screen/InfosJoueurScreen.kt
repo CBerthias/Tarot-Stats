@@ -25,8 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berthias.tarotstats.R
 import com.berthias.tarotstats.TarotTopAppBar
@@ -47,14 +45,9 @@ object InfosJoueurDestination : NavigationDestination {
 }
 
 @Composable
-fun InfosJoueurScreen(drawerState: DrawerState, joueurUINom: String) {
-
-    val partieViewModel = viewModel<PartieViewModel>(factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PartieViewModel() as T
-        }
-    })
-
+fun InfosJoueurScreen(
+    drawerState: DrawerState, joueurUINom: String, partieViewModel: PartieViewModel = viewModel()
+) {
     val partiesUI: List<PartieUI> by partieViewModel.listParties.collectAsState()
     val partiesForJoueur = partieViewModel.getPartiesForJoueur(joueurUINom, partiesUI)
 

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,7 +38,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,8 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berthias.tarotstats.R
 import com.berthias.tarotstats.TarotTopAppBar
@@ -63,7 +61,6 @@ import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
 import com.berthias.tarotstats.util.ResizableText
-import kotlinx.coroutines.launch
 
 object ListePartiesDestination : NavigationDestination {
     override val route: String
@@ -73,21 +70,16 @@ object ListePartiesDestination : NavigationDestination {
 }
 
 @Composable
-fun ListePartiesScreen(drawerState: DrawerState, navigateToAddPartie: () -> Unit) {
+fun ListePartiesScreen(
+    drawerState: DrawerState,
+    navigateToAddPartie: () -> Unit,
+    partieViewModel: PartieViewModel = viewModel()
+) {
     Scaffold(topBar = {
         TarotTopAppBar(
             title = ListePartiesDestination.title, drawerState = drawerState
         )
     }) { innerpadding ->
-
-        val coroutineScope = rememberCoroutineScope()
-        val partieViewModel =
-            viewModel<PartieViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PartieViewModel() as T
-                }
-            })
-
         val listePartiesUI by partieViewModel.listParties.collectAsState()
 
         Box(
@@ -96,17 +88,17 @@ fun ListePartiesScreen(drawerState: DrawerState, navigateToAddPartie: () -> Unit
                 .padding(4.dp)
         ) {
             ListePartiesContent(listePartiesUI = listePartiesUI, onDelete = { partieUI ->
-                coroutineScope.launch {
-                    partieViewModel.deletePartie(partieUI)
-                }
+                partieViewModel.deletePartie(partieUI)
             })
             FloatingActionButton(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.BottomCenter)
                     .padding(16.dp),
                 onClick = {
                     navigateToAddPartie()
-                }) {
+                },
+                shape = RoundedCornerShape(100)
+            ) {
                 Icon(Icons.Filled.Add, "add button")
             }
         }
@@ -123,24 +115,7 @@ fun ListePartiesContent(
     var victoireOrder by remember { mutableStateOf(OrderTri.NONE) }
 
     var sortedListParties = listePartiesUI.subList(0, listePartiesUI.size).reversed()
-    if (joueurOrder != OrderTri.NONE) {
-        sortedListParties = sortedListParties.sortedBy { it.nomJoueur }
-        if (joueurOrder == OrderTri.DESC) {
-            sortedListParties = sortedListParties.reversed()
-        }
-    }
-    if (roiOrder != OrderTri.NONE) {
-        sortedListParties = sortedListParties.sortedBy { it.couleur }
-        if (roiOrder == OrderTri.DESC) {
-            sortedListParties = sortedListParties.reversed()
-        }
-    }
-    if (victoireOrder != OrderTri.NONE) {
-        sortedListParties = sortedListParties.sortedBy { it.gagne }
-        if (victoireOrder == OrderTri.DESC) {
-            sortedListParties = sortedListParties.reversed()
-        }
-    }
+    sortedListParties = getSortedListPartie(joueurOrder, roiOrder, victoireOrder, sortedListParties)
 
     Column(modifier = modifier.fillMaxSize()) {
         Row(modifier = Modifier.height(50.dp)) {
@@ -161,27 +136,12 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(modifier = modifier
-                    .weight(1F)
-                    .fillMaxHeight()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .drawWithContent {
-                        if (shouldDraw) {
-                            drawContent()
-                        }
-                    },
+                HeaderText(modifier = Modifier.weight(1F),
                     text = "Joueur",
-                    style = resizedTextStyle,
-                    softWrap = false,
-                    onTextLayout = { result ->
-                        if (result.didOverflowWidth || result.didOverflowHeight) {
-                            resizedTextStyle =
-                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
-                            shouldDraw = false
-                        } else {
-                            shouldDraw = true
-                        }
-                    })
+                    shouldDraw = shouldDraw,
+                    resizedTextStyle = resizedTextStyle,
+                    onModifyTextStyle = { resizedTextStyle = it },
+                    onModifyShouldDraw = { shouldDraw = it })
                 Icon(
                     modifier = Modifier.alpha(if (joueurOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(joueurOrder),
@@ -197,27 +157,12 @@ fun ListePartiesContent(
                         victoireOrder = OrderTri.NONE
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(modifier = modifier
-                    .weight(1F)
-                    .fillMaxHeight()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .drawWithContent {
-                        if (shouldDraw) {
-                            drawContent()
-                        }
-                    },
+                HeaderText(modifier = Modifier.weight(1F),
                     text = "Roi",
-                    style = resizedTextStyle,
-                    softWrap = false,
-                    onTextLayout = { result ->
-                        if (result.didOverflowWidth || result.didOverflowHeight) {
-                            resizedTextStyle =
-                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
-                            shouldDraw = false
-                        } else {
-                            shouldDraw = true
-                        }
-                    })
+                    shouldDraw = shouldDraw,
+                    resizedTextStyle = resizedTextStyle,
+                    onModifyTextStyle = { resizedTextStyle = it },
+                    onModifyShouldDraw = { shouldDraw = it })
                 Icon(
                     modifier = Modifier.alpha(if (roiOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(roiOrder),
@@ -233,27 +178,12 @@ fun ListePartiesContent(
                         victoireOrder = rotateOrder(victoireOrder)
                     }, verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(modifier = modifier
-                    .weight(1F)
-                    .fillMaxHeight()
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .drawWithContent {
-                        if (shouldDraw) {
-                            drawContent()
-                        }
-                    },
+                HeaderText(modifier = Modifier.weight(1F),
                     text = "Victoire",
-                    style = resizedTextStyle,
-                    softWrap = false,
-                    onTextLayout = { result ->
-                        if (result.didOverflowWidth || result.didOverflowHeight) {
-                            resizedTextStyle =
-                                resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f)
-                            shouldDraw = false
-                        } else {
-                            shouldDraw = true
-                        }
-                    })
+                    shouldDraw = shouldDraw,
+                    resizedTextStyle = resizedTextStyle,
+                    onModifyTextStyle = { resizedTextStyle = it },
+                    onModifyShouldDraw = { shouldDraw = it })
                 Icon(
                     modifier = Modifier.alpha(if (victoireOrder == OrderTri.NONE) 0f else 1f),
                     imageVector = getIconOrder(victoireOrder),
@@ -273,6 +203,32 @@ fun ListePartiesContent(
             }
         }
     }
+}
+
+@Composable
+fun HeaderText(
+    modifier: Modifier = Modifier,
+    text: String,
+    shouldDraw: Boolean,
+    resizedTextStyle: TextStyle,
+    onModifyTextStyle: (TextStyle) -> Unit,
+    onModifyShouldDraw: (Boolean) -> Unit
+) {
+    Text(modifier = modifier
+        .fillMaxHeight()
+        .wrapContentHeight(Alignment.CenterVertically)
+        .drawWithContent {
+            if (shouldDraw) {
+                drawContent()
+            }
+        }, text = text, style = resizedTextStyle, softWrap = false, onTextLayout = { result ->
+        if (result.didOverflowWidth || result.didOverflowHeight) {
+            onModifyTextStyle(resizedTextStyle.copy(fontSize = resizedTextStyle.fontSize * 0.95f))
+            onModifyShouldDraw(false)
+        } else {
+            onModifyShouldDraw(true)
+        }
+    })
 }
 
 @Composable
@@ -296,7 +252,7 @@ fun RowPartie(modifier: Modifier = Modifier, partieUI: PartieUI, onDelete: (Part
             CouleurEnum.TREFLE -> MaterialTheme.colorScheme.onPrimaryContainer
         }
         ResizableText(
-            text = partieUI.nomJoueur!!,
+            text = partieUI.nomJoueur,
             style = TextStyle(
                 fontSize = 20.sp, textAlign = TextAlign.Center
             ),
@@ -367,6 +323,31 @@ private fun getIconOrder(order: OrderTri): ImageVector {
         OrderTri.ASC -> Icons.Filled.KeyboardArrowUp
         OrderTri.DESC -> Icons.Filled.KeyboardArrowDown
     }
+}
+
+private fun getSortedListPartie(
+    joueurOrder: OrderTri, roiOrder: OrderTri, victoireOrder: OrderTri, listParties: List<PartieUI>
+): List<PartieUI> {
+    var sortedListParties: List<PartieUI> = listParties.subList(0, listParties.size)
+    if (joueurOrder != OrderTri.NONE) {
+        sortedListParties = sortedListParties.sortedBy { it.nomJoueur }
+        if (joueurOrder == OrderTri.DESC) {
+            sortedListParties = sortedListParties.reversed()
+        }
+    }
+    if (roiOrder != OrderTri.NONE) {
+        sortedListParties = sortedListParties.sortedBy { it.couleur }
+        if (roiOrder == OrderTri.DESC) {
+            sortedListParties = sortedListParties.reversed()
+        }
+    }
+    if (victoireOrder != OrderTri.NONE) {
+        sortedListParties = sortedListParties.sortedBy { it.gagne }
+        if (victoireOrder == OrderTri.DESC) {
+            sortedListParties = sortedListParties.reversed()
+        }
+    }
+    return sortedListParties
 }
 
 enum class OrderTri {

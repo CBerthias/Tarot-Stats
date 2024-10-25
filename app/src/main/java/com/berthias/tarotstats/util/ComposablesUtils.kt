@@ -121,7 +121,6 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp),
-                image = painterResource(R.drawable.trefle),
                 CouleurEnum.TREFLE,
                 nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.TREFLE, 0),
                 nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.TREFLE, 0)
@@ -130,7 +129,6 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp),
-                image = painterResource(R.drawable.carreau),
                 CouleurEnum.CARREAU,
                 nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.CARREAU, 0),
                 nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.CARREAU, 0)
@@ -141,7 +139,6 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp),
-                image = painterResource(R.drawable.coeur),
                 CouleurEnum.COEUR,
                 nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.COEUR, 0),
                 nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.COEUR, 0)
@@ -150,7 +147,6 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp, end = 16.dp),
-                image = painterResource(R.drawable.pique),
                 CouleurEnum.PIQUE,
                 nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.PIQUE, 0),
                 nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.PIQUE, 0)
@@ -161,11 +157,7 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
 
 @Composable
 fun WinrateRoiCard(
-    modifier: Modifier = Modifier,
-    image: Painter,
-    couleur: CouleurEnum,
-    nbWinRoi: Int,
-    nbPartiesRoi: Int
+    modifier: Modifier = Modifier, couleur: CouleurEnum, nbWinRoi: Int, nbPartiesRoi: Int
 ) {
     Card(modifier = modifier.aspectRatio(1f)) {
         Column(
@@ -179,7 +171,7 @@ fun WinrateRoiCard(
                 modifier = Modifier
                     .weight(3f)
                     .aspectRatio(1f),
-                painter = image,
+                painter = painterByColor(couleur),
                 contentDescription = couleur.stringValue
             )
             val winrate: Float = nbWinRoi.div(nbPartiesRoi.toFloat()) * 100
@@ -218,6 +210,16 @@ fun ResizableText(modifier: Modifier = Modifier, text: String, style: TextStyle)
             shouldDraw = true
         }
     })
+}
+
+@Composable
+fun painterByColor(couleur: CouleurEnum): Painter {
+    return when (couleur) {
+        CouleurEnum.CARREAU -> painterResource(R.drawable.carreau)
+        CouleurEnum.COEUR -> painterResource(R.drawable.coeur)
+        CouleurEnum.PIQUE -> painterResource(R.drawable.pique)
+        CouleurEnum.TREFLE -> painterResource(R.drawable.trefle)
+    }
 }
 
 @Preview(showBackground = true)

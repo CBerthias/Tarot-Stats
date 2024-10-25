@@ -4,15 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -27,8 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.JoueurUI
@@ -48,35 +47,60 @@ object ListeJoueursDestination : NavigationDestination {
 fun ListeJoueursScreen(
     drawerState: DrawerState,
     navigateToAddJoueur: () -> Unit,
-    navigateToInfosJoueur: (JoueurUI) -> Unit
+    navigateToInfosJoueur: (JoueurUI) -> Unit,
+    navigateToLeaderboard: () -> Unit,
+    joueurViewModel: JoueurViewModel = viewModel()
 ) {
     Scaffold(topBar = {
         TarotTopAppBar(
             title = ListeJoueursDestination.title, drawerState = drawerState
         )
     }) { innerpadding ->
-        val joueurViewModel =
-            viewModel<JoueurViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return JoueurViewModel() as T
-                }
-            })
         val listeJoueurs by joueurViewModel.listJoueurs.collectAsState()
 
-        Box(modifier = Modifier.padding(innerpadding)) {
+        ListeJoueursScreenContent(
+            modifier = Modifier.padding(innerpadding),
+            listeJoueurs,
+            navigateToInfosJoueur,
+            navigateToAddJoueur,
+            navigateToLeaderboard
+        )
+    }
+}
+
+@Composable
+fun ListeJoueursScreenContent(
+    modifier: Modifier = Modifier,
+    listeJoueurs: List<JoueurUI>,
+    navigateToInfosJoueur: (JoueurUI) -> Unit,
+    navigateToAddJoueur: () -> Unit,
+    navigateToLeaderboard: () -> Unit
+) {
+    Box(modifier = modifier) {
+        Column {
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
+                shape = AbsoluteCutCornerShape(0),
+                onClick = {
+                    navigateToLeaderboard()
+                }) {
+                Text(text = "Classement", fontSize = 20.sp)
+            }
             ListeJoueurs(
                 modifier = Modifier.fillMaxSize(),
                 listeJoueurs = listeJoueurs,
                 navigateToInfosJoueur = navigateToInfosJoueur
             )
-            FloatingActionButton(modifier = Modifier
+        }
+        FloatingActionButton(
+            modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-                onClick = {
-                    navigateToAddJoueur()
-                }) {
-                Icon(Icons.Filled.Add, "add button")
-            }
+            onClick = {
+                navigateToAddJoueur()
+            }) {
+            Icon(Icons.Filled.Add, "add button")
         }
     }
 }
@@ -90,7 +114,7 @@ fun ListeJoueurs(
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier
-            .fillMaxHeight()
+            .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
         listeJoueurs.forEach { joueur ->
@@ -117,14 +141,10 @@ fun RowJoueur(
 
 @Preview(showBackground = true)
 @Composable
-fun RowJoueurPreview() {
+fun ListeJoueursScreenContentPreview() {
     TarotStatsTheme {
-        ListeJoueurs(
-            listeJoueurs = listOf(
-                JoueurUI("Corentin"),
-                JoueurUI("Julien"),
-                JoueurUI("Josh"),
-            )
-        ) { }
+        ListeJoueursScreenContent(listeJoueurs = listOf(
+            JoueurUI("Corentin"), JoueurUI("Julien"), JoueurUI("Josh")
+        ), navigateToInfosJoueur = {}, navigateToAddJoueur = {}, navigateToLeaderboard = {})
     }
 }
