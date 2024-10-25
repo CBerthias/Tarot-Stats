@@ -13,16 +13,15 @@ import java.util.stream.Collectors
 
 data class PartieUI(
     var id: Long,
-    var nomJoueur: String?,
+    var nomJoueur: String,
     var couleur: CouleurEnum,
     var gagne: Boolean,
-    var coequipier: String?
+    var coequipier: String
 ) {
-    fun toPartie(): Partie? {
-        return if (nomJoueur != null) Partie(
-            id, nomJoueur!!, couleur, gagne, coequipier ?: nomJoueur!!
+    fun toPartie(): Partie {
+        return Partie(
+            id, nomJoueur, couleur, gagne, coequipier
         )
-        else null
     }
 
     companion object {

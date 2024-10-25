@@ -161,21 +161,21 @@ fun AddPartieForm(
         }
 
         val partieUI = PartieUI(
-            0, joueurSelected?.nom, couleurSelected, gagne, coequipierSelected?.nom
+            0, joueurSelected?.nom ?: "", couleurSelected, gagne, coequipierSelected?.nom ?: ""
         )
 
         Button(modifier = Modifier.align(Alignment.End), onClick = {
-
-            if (partieUI.nomJoueur != null) {
+            if (joueurSelected == null) {
+                joueurSelected = joueurList.getOrNull(0)
+                partieUI.nomJoueur = joueurSelected?.nom ?: ""
+            }
+            if (coequipierSelected == null) {
+                coequipierSelected = joueurList.getOrNull(0)
+                partieUI.coequipier = coequipierSelected?.nom ?: ""
+            }
+            if (partieUI.nomJoueur.isNotBlank() && partieUI.coequipier.isNotBlank()) {
                 onSave(partieUI)
                 onValidate()
-            } else {
-                joueurSelected = joueurList.getOrNull(0)
-                if (joueurSelected != null) {
-                    partieUI.nomJoueur = joueurSelected!!.nom
-                    onSave(partieUI)
-                    onValidate()
-                }
             }
         }) {
             Text(text = "Enregistrer la partie")
