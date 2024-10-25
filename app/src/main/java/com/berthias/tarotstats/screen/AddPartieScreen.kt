@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
@@ -26,19 +25,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.berthias.tarotstats.R
 import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.JoueurUI
 import com.berthias.tarotstats.data.viewmodel.JoueurViewModel
@@ -48,7 +42,7 @@ import com.berthias.tarotstats.model.CouleurEnum
 import com.berthias.tarotstats.navigation.NavigationDestination
 import com.berthias.tarotstats.ui.theme.TarotStatsTheme
 import com.berthias.tarotstats.util.DropdownBox
-import kotlinx.coroutines.launch
+import com.berthias.tarotstats.util.painterByColor
 
 object AddPartieDestination : NavigationDestination {
     override val route: String
@@ -59,38 +53,27 @@ object AddPartieDestination : NavigationDestination {
 }
 
 @Composable
-fun AddPartieScreen(drawerState: DrawerState, onValidate: () -> Unit) {
+fun AddPartieScreen(
+    drawerState: DrawerState,
+    onValidate: () -> Unit,
+    joueurViewModel: JoueurViewModel = viewModel(),
+    partieViewModel: PartieViewModel = viewModel()
+) {
     Scaffold(topBar = {
         TarotTopAppBar(
             title = AddPartieDestination.title, drawerState = drawerState
         )
     }) { innerpadding ->
-        val joueurViewModel =
-            viewModel<JoueurViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return JoueurViewModel() as T
-                }
-            })
-
-        val partieViewModel =
-            viewModel<PartieViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PartieViewModel() as T
-                }
-            })
-
-        val coroutineScope = rememberCoroutineScope()
         val joueurList by joueurViewModel.listJoueurs.collectAsState()
 
         AddPartieForm(modifier = Modifier.padding(innerpadding),
             joueurList = joueurList,
             onSave = { partieUI ->
-                coroutineScope.launch { partieViewModel.savePartie(partieUI) }
+                partieViewModel.savePartie(partieUI)
             }) { onValidate() }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPartieForm(
     modifier: Modifier = Modifier,
@@ -113,12 +96,7 @@ fun AddPartieForm(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CouleurEnum.entries.forEach { couleur ->
-                val painter = when (couleur) {
-                    CouleurEnum.CARREAU -> painterResource(R.drawable.carreau)
-                    CouleurEnum.COEUR -> painterResource(R.drawable.coeur)
-                    CouleurEnum.PIQUE -> painterResource(R.drawable.pique)
-                    CouleurEnum.TREFLE -> painterResource(R.drawable.trefle)
-                }
+                val painter = painterByColor(couleur)
                 ColorButtonSelector(
                     modifier = Modifier
                         .padding(4.dp)

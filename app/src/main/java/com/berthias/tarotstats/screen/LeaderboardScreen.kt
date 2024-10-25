@@ -1,7 +1,6 @@
 package com.berthias.tarotstats.screen
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
@@ -21,8 +20,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.PartieUI
@@ -41,20 +38,13 @@ object LeaderboardDestination : NavigationDestination {
 
 @Composable
 fun LeaderboardScreen(
-    drawerState: DrawerState,
+    drawerState: DrawerState, partieViewModel: PartieViewModel = viewModel()
 ) {
     Scaffold(topBar = {
         TarotTopAppBar(
             title = LeaderboardDestination.title, drawerState = drawerState
         )
     }) { innerpadding ->
-        val partieViewModel =
-            viewModel<PartieViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PartieViewModel() as T
-                }
-            })
-
         val listePartiesUI by partieViewModel.listParties.collectAsState()
 
         LeaderboardScreenContent(

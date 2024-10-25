@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 data class JoueurUI(var nom: String) {
     fun toJoueur(): Joueur = Joueur(nom)
@@ -32,7 +33,9 @@ class JoueurViewModel : ViewModel() {
         initialValue = emptyList()
     )
 
-    suspend fun saveJoueur(joueurUI: JoueurUI) {
-        joueurRepository.insert(joueurUI.toJoueur())
+    fun saveJoueur(joueurUI: JoueurUI) {
+        viewModelScope.launch {
+            joueurRepository.insert(joueurUI.toJoueur())
+        }
     }
 }

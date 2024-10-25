@@ -11,8 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.berthias.tarotstats.TarotTopAppBar
 import com.berthias.tarotstats.data.viewmodel.PartieUI
@@ -30,18 +28,12 @@ object HomeDestination : NavigationDestination {
 }
 
 @Composable
-fun HomeScreen(drawerState: DrawerState) {
+fun HomeScreen(drawerState: DrawerState, partieViewModel: PartieViewModel = viewModel()) {
     Scaffold(topBar = {
         TarotTopAppBar(
             title = HomeDestination.title, drawerState = drawerState
         )
     }) { innerpadding ->
-        val partieViewModel =
-            viewModel<PartieViewModel>(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return PartieViewModel() as T
-                }
-            })
         val listeParties by partieViewModel.listParties.collectAsState()
         HomePageContent(modifier = Modifier.padding(innerpadding), listeParties = listeParties)
     }

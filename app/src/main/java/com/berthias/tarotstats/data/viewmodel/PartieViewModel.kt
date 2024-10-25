@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.stream.Collectors
 
 data class PartieUI(
@@ -48,14 +49,18 @@ class PartieViewModel : ViewModel() {
         initialValue = emptyList()
     )
 
-    suspend fun savePartie(partieUI: PartieUI) {
-        val partie: Partie? = partieUI.toPartie()
-        if (partie != null) partieRepository.insert(partie)
+    fun savePartie(partieUI: PartieUI) {
+        viewModelScope.launch {
+            val partie: Partie = partieUI.toPartie()
+            partieRepository.insert(partie)
+        }
     }
 
-    suspend fun deletePartie(partieUI: PartieUI) {
-        val partie: Partie? = partieUI.toPartie()
-        if (partie != null) partieRepository.delete(partie)
+    fun deletePartie(partieUI: PartieUI) {
+        viewModelScope.launch {
+            val partie: Partie = partieUI.toPartie()
+            partieRepository.delete(partie)
+        }
     }
 
     fun getPartiesForJoueur(joueurUINom: String, parties: List<PartieUI>): List<PartieUI> {

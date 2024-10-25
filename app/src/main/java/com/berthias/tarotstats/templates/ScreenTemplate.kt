@@ -33,7 +33,7 @@ fun PageScreen(
 
 @Composable
 fun PageContent(modifier: Modifier = Modifier) {
-
+    // Implement your content here
 }
 
 @Preview(showBackground = true)
