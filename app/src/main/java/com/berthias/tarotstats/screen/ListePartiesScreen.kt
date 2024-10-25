@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -91,11 +92,13 @@ fun ListePartiesScreen(
             })
             FloatingActionButton(
                 modifier = Modifier
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.BottomCenter)
                     .padding(16.dp),
                 onClick = {
                     navigateToAddPartie()
-                }) {
+                },
+                shape = RoundedCornerShape(100)
+            ) {
                 Icon(Icons.Filled.Add, "add button")
             }
         }
