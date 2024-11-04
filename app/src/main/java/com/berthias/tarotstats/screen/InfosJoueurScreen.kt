@@ -76,7 +76,7 @@ fun StatsJoueur(modifier: Modifier = Modifier, parties: List<PartieUI>) {
     Column(modifier = modifier.verticalScroll(scrollState)) {
         RawValues(
             modifier = Modifier
-                .heightIn(max = 200.dp)
+                .heightIn(max = 150.dp)
                 .height(IntrinsicSize.Max), parties = parties
         )
         Winrates(
@@ -216,7 +216,7 @@ fun RawValues(modifier: Modifier = Modifier, parties: List<PartieUI>) {
 }
 
 @Preview(
-    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=portrait"
+    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=landscape"
 )
 @Composable
 fun StatsJoueurPreview() {

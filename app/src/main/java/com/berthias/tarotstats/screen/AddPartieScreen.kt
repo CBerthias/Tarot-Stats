@@ -4,15 +4,19 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
@@ -84,8 +88,10 @@ fun AddPartieForm(
     onValidate: () -> Unit
 ) {
     val sortedJoueurUIListe = joueurList.sortedWith(compareBy(JoueurUI::nom))
+    val scrollState = rememberScrollState()
     Column(
         modifier = modifier
+            .verticalScroll(scrollState)
             .fillMaxWidth()
             .padding(16.dp)
     ) {
@@ -95,7 +101,8 @@ fun AddPartieForm(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .heightIn(min = 30.dp, max = 100.dp)
+                .height(IntrinsicSize.Min),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -210,7 +217,7 @@ fun ColorButtonSelector(
 }
 
 @Preview(
-    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=landscape"
+    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=portrait"
 )
 @Composable
 fun AddPartieFormPreview() {
