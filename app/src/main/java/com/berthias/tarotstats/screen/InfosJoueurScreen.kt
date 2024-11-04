@@ -2,14 +2,20 @@ package com.berthias.tarotstats.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
@@ -66,9 +72,18 @@ fun InfosJoueurScreen(
 
 @Composable
 fun StatsJoueur(modifier: Modifier = Modifier, parties: List<PartieUI>) {
-    Column(modifier = modifier) {
-        RawValues(parties = parties)
-        Winrates(parties = parties)
+    val scrollState = rememberScrollState()
+    Column(modifier = modifier.verticalScroll(scrollState)) {
+        RawValues(
+            modifier = Modifier
+                .heightIn(max = 200.dp)
+                .height(IntrinsicSize.Max), parties = parties
+        )
+        Winrates(
+            modifier = Modifier
+                .heightIn(max = 400.dp)
+                .height(IntrinsicSize.Max), parties = parties
+        )
     }
 }
 
@@ -83,113 +98,126 @@ fun RawValues(modifier: Modifier = Modifier, parties: List<PartieUI>) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        Card(
+        Box(
             modifier = Modifier
-                .padding(8.dp)
                 .weight(1f)
-                .aspectRatio(1f)
+                .fillMaxSize()
         ) {
-            Column(
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .align(Alignment.Center)
             ) {
-                ResizableText(
+                Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterHorizontally)
-                        .wrapContentHeight(Alignment.Bottom),
-                    text = "Parties jouées",
-                    style = TextStyle(
-                        textAlign = TextAlign.Center, fontSize = 30.sp
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ResizableText(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .wrapContentHeight(Alignment.Bottom),
+                        text = "Parties jouées",
+                        style = TextStyle(
+                            textAlign = TextAlign.Center, fontSize = 30.sp
+                        )
                     )
-                )
-                ResizableText(
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .align(Alignment.CenterHorizontally),
-                    text = nbParties.toString(),
-                    style = TextStyle(
-                        textAlign = TextAlign.Center, fontSize = 50.sp
+                    ResizableText(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = nbParties.toString(),
+                        style = TextStyle(
+                            textAlign = TextAlign.Center, fontSize = 50.sp
+                        )
                     )
-                )
+                }
             }
         }
-        Card(
+        Box(
             modifier = Modifier
-                .padding(8.dp)
                 .weight(1f)
-                .aspectRatio(1f)
+                .fillMaxSize()
         ) {
-            Column(
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .align(Alignment.Center)
             ) {
-                val trophee = painterResource(R.drawable.trophee)
-                Image(
+                Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .aspectRatio(1f),
-                    painter = trophee,
-                    contentDescription = "Victoires"
-                )
-                ResizableText(
-                    modifier = Modifier.weight(1.5f),
-                    text = nbWin.toString(),
-                    style = TextStyle(fontSize = 50.sp)
-                )
-            }
-        }
-        Card(
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f)
-                .aspectRatio(1f)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     val trophee = painterResource(R.drawable.trophee)
                     Image(
                         modifier = Modifier
-                            .fillMaxHeight()
+                            .fillMaxHeight(0.35f)
                             .aspectRatio(1f),
                         painter = trophee,
                         contentDescription = "Victoires"
                     )
                     ResizableText(
-                        text = "%",
-                        style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.SemiBold)
+                        text = nbWin.toString(), style = TextStyle(fontSize = 50.sp)
                     )
                 }
-                val winrate: Float = nbWin.div(nbParties.toFloat()) * 100
-                val winrateString = if (winrate.isNaN()) "-%" else "%.0f".format(winrate) + "%"
-                ResizableText(
+            }
+        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxSize()
+        ) {
+            Card(
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .padding(8.dp)
+                    .align(Alignment.Center)
+            ) {
+                Column(
                     modifier = Modifier
-                        .weight(1.5f)
-                        .padding(4.dp),
-                    text = winrateString,
-                    style = TextStyle(fontSize = 50.sp)
-                )
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxHeight(0.35f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val trophee = painterResource(R.drawable.trophee)
+                        Image(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .aspectRatio(1f),
+                            painter = trophee,
+                            contentDescription = "Victoires"
+                        )
+                        ResizableText(
+                            text = "%",
+                            style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.SemiBold)
+                        )
+                    }
+                    val winrate: Float = nbWin.div(nbParties.toFloat()) * 100
+                    val winrateString = if (winrate.isNaN()) "-%" else "%.0f".format(winrate) + "%"
+                    ResizableText(
+                        modifier = Modifier.padding(4.dp),
+                        text = winrateString,
+                        style = TextStyle(fontSize = 50.sp)
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=portrait"
+)
 @Composable
 fun StatsJoueurPreview() {
     TarotStatsTheme {

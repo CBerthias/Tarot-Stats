@@ -1,8 +1,13 @@
 package com.berthias.tarotstats.screen
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -41,10 +46,18 @@ fun HomeScreen(drawerState: DrawerState, partieViewModel: PartieViewModel = view
 
 @Composable
 fun HomePageContent(modifier: Modifier = Modifier, listeParties: List<PartieUI>) {
+    val scrollState = rememberScrollState()
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .verticalScroll(scrollState)
+            .fillMaxSize()
     ) {
-        Winrates(modifier = Modifier.padding(16.dp), parties = listeParties)
+        Winrates(
+            modifier = Modifier
+                .heightIn(max = 400.dp)
+                .height(IntrinsicSize.Max),
+            parties = listeParties
+        )
     }
 }
 

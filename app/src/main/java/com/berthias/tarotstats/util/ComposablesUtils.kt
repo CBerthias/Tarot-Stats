@@ -4,12 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -103,54 +105,84 @@ fun Winrates(modifier: Modifier = Modifier, parties: List<PartieUI>) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .height(IntrinsicSize.Min)
     ) {
         Text(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
             text = "Winrate par roi appelé",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .weight(1f)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            WinrateRoiCard(
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp),
-                CouleurEnum.TREFLE,
-                nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.TREFLE, 0),
-                nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.TREFLE, 0)
-            )
-            WinrateRoiCard(
+                    .fillMaxSize()
+            ) {
+                WinrateRoiCard(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .align(Alignment.Center),
+                    CouleurEnum.TREFLE,
+                    nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.TREFLE, 0),
+                    nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.TREFLE, 0)
+                )
+            }
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp),
-                CouleurEnum.CARREAU,
-                nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.CARREAU, 0),
-                nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.CARREAU, 0)
-            )
+                    .fillMaxSize()
+            ) {
+                WinrateRoiCard(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .align(Alignment.Center),
+                    CouleurEnum.CARREAU,
+                    nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.CARREAU, 0),
+                    nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.CARREAU, 0)
+                )
+            }
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            WinrateRoiCard(
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp),
-                CouleurEnum.COEUR,
-                nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.COEUR, 0),
-                nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.COEUR, 0)
-            )
-            WinrateRoiCard(
+                    .fillMaxSize()
+            ) {
+                WinrateRoiCard(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .align(Alignment.Center),
+                    CouleurEnum.COEUR,
+                    nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.COEUR, 0),
+                    nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.COEUR, 0)
+                )
+            }
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 16.dp, end = 16.dp),
-                CouleurEnum.PIQUE,
-                nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.PIQUE, 0),
-                nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.PIQUE, 0)
-            )
+                    .fillMaxSize()
+            ) {
+                WinrateRoiCard(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .align(Alignment.Center),
+                    CouleurEnum.PIQUE,
+                    nbWinRoi = nbWinRoi.getOrDefault(CouleurEnum.PIQUE, 0),
+                    nbPartiesRoi = nbPartiesRoi.getOrDefault(CouleurEnum.PIQUE, 0)
+                )
+            }
         }
     }
 }
@@ -222,7 +254,9 @@ fun painterByColor(couleur: CouleurEnum): Painter {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=landscape"
+)
 @Composable
 fun WinratesPreview() {
     TarotStatsTheme {
