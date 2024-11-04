@@ -2,10 +2,12 @@ package com.berthias.tarotstats.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -91,20 +93,28 @@ fun AddPartieForm(
         var couleurSelected by remember { mutableStateOf(couleurList[0]) }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             CouleurEnum.entries.forEach { couleur ->
-                val painter = painterByColor(couleur)
-                ColorButtonSelector(
+                Box(
                     modifier = Modifier
-                        .padding(4.dp)
-                        .weight(1f),
-                    image = painter,
-                    couleur = couleur,
-                    selected = couleurSelected == couleur
-                ) { couleurSelected = couleur }
+                        .weight(1f)
+                        .fillMaxSize()
+                ) {
+                    val painter = painterByColor(couleur)
+                    ColorButtonSelector(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .align(Alignment.Center),
+                        image = painter,
+                        couleur = couleur,
+                        selected = couleurSelected == couleur
+                    ) { couleurSelected = couleur }
+                }
             }
         }
 
@@ -199,7 +209,9 @@ fun ColorButtonSelector(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showSystemUi = true, device = "spec:width=411dp,height=891dp,dpi=420,orientation=landscape"
+)
 @Composable
 fun AddPartieFormPreview() {
     TarotStatsTheme {
