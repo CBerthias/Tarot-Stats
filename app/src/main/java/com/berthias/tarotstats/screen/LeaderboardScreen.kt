@@ -3,6 +3,8 @@ package com.berthias.tarotstats.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -102,7 +104,8 @@ fun WinrateLeaderboard(
     nbParties.forEach { (nomJoueur, nbParties) ->
         winrateJoueur[nomJoueur] = (nbWin.getOrDefault(nomJoueur, 0) / nbParties.toFloat()) * 100
     }
-    Column(modifier = modifier) {
+    val scrollstate = rememberScrollState()
+    Column(modifier = modifier.verticalScroll(scrollstate)) {
         val sortedWinrateJoueur = winrateJoueur.toSortedMap(compareByDescending<String> {
             winrateJoueur[it]
         }.thenComparing(compareByDescending { nbParties[it] }).thenComparing(String::toString)
