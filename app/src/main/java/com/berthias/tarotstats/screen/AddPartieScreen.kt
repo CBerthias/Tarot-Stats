@@ -81,7 +81,7 @@ fun AddPartieForm(
     onSave: (PartieUI) -> Unit,
     onValidate: () -> Unit
 ) {
-
+    val sortedJoueurUIListe = joueurList.sortedWith(compareBy(JoueurUI::nom))
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -109,16 +109,16 @@ fun AddPartieForm(
         }
 
         val joueurStringList =
-            if (joueurList.isNotEmpty()) joueurList.map { it.nom } else listOf("")
+            if (sortedJoueurUIListe.isNotEmpty()) sortedJoueurUIListe.map { it.nom } else listOf("")
 
-        var joueurSelected by remember { mutableStateOf(joueurList.getOrNull(0)) }
+        var joueurSelected by remember { mutableStateOf(sortedJoueurUIListe.getOrNull(0)) }
         DropdownBox(valueList = joueurStringList, label = "Joueur") {
-            joueurSelected = joueurList.getOrNull(it)
+            joueurSelected = sortedJoueurUIListe.getOrNull(it)
         }
 
-        var coequipierSelected by remember { mutableStateOf(joueurList.getOrNull(0)) }
+        var coequipierSelected by remember { mutableStateOf(sortedJoueurUIListe.getOrNull(0)) }
         DropdownBox(valueList = joueurStringList, label = "Avec") {
-            coequipierSelected = joueurList.getOrNull(it)
+            coequipierSelected = sortedJoueurUIListe.getOrNull(it)
         }
 
         var gagne by remember { mutableStateOf(false) }
@@ -144,11 +144,11 @@ fun AddPartieForm(
 
         Button(modifier = Modifier.align(Alignment.End), onClick = {
             if (joueurSelected == null) {
-                joueurSelected = joueurList.getOrNull(0)
+                joueurSelected = sortedJoueurUIListe.getOrNull(0)
                 partieUI.nomJoueur = joueurSelected?.nom ?: ""
             }
             if (coequipierSelected == null) {
-                coequipierSelected = joueurList.getOrNull(0)
+                coequipierSelected = sortedJoueurUIListe.getOrNull(0)
                 partieUI.coequipier = coequipierSelected?.nom ?: ""
             }
             if (partieUI.nomJoueur.isNotBlank() && partieUI.coequipier.isNotBlank()) {
@@ -203,8 +203,8 @@ fun ColorButtonSelector(
 @Composable
 fun AddPartieFormPreview() {
     TarotStatsTheme {
-        AddPartieForm(joueurList = listOf(JoueurUI("Corentin"), JoueurUI("Josh")),
-            onSave = {},
-            onValidate = {})
+        AddPartieForm(joueurList = listOf(
+            JoueurUI("Corentin"), JoueurUI("Josh"), JoueurUI("Benoit"), JoueurUI("Kevin")
+        ), onSave = {}, onValidate = {})
     }
 }

@@ -93,10 +93,9 @@ fun ListeJoueursScreenContent(
                 navigateToInfosJoueur = navigateToInfosJoueur
             )
         }
-        FloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
+        FloatingActionButton(modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(16.dp),
             onClick = {
                 navigateToAddJoueur()
             }) {
@@ -117,7 +116,7 @@ fun ListeJoueurs(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        listeJoueurs.forEach { joueur ->
+        listeJoueurs.sortedWith(compareBy(JoueurUI::nom)).forEach { joueur ->
             RowJoueur(joueurUI = joueur, navigateToInfosJoueur = navigateToInfosJoueur)
             HorizontalDivider()
         }
@@ -144,7 +143,7 @@ fun RowJoueur(
 fun ListeJoueursScreenContentPreview() {
     TarotStatsTheme {
         ListeJoueursScreenContent(listeJoueurs = listOf(
-            JoueurUI("Corentin"), JoueurUI("Julien"), JoueurUI("Josh")
+            JoueurUI("Corentin"), JoueurUI("Julien"), JoueurUI("Josh"), JoueurUI("Benoit")
         ), navigateToInfosJoueur = {}, navigateToAddJoueur = {}, navigateToLeaderboard = {})
     }
 }
